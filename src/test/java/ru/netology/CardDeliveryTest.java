@@ -159,7 +159,7 @@ public class CardDeliveryTest {
         $("[data-test-id='phone'] input").setValue("+79102671142");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(byText("Забронировать")).click();
-        $("[data-test-id='name'] .input_invalid .input__sub")
+        $("[data-test-id='name'] .input__inner .input__sub")
                 .shouldBe(visible)
                 .shouldHave(text("Поле обязательно для заполнения"));
 
@@ -177,7 +177,7 @@ public class CardDeliveryTest {
         $("[data-test-id='phone'] input").setValue("+79102671142");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(byText("Забронировать")).click();
-        $("[data-test-id='name'] .input_invalid .input__sub")
+        $("[data-test-id='name'] .input__inner .input__sub")
                 .shouldBe(visible)
                 .shouldHave(text("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
 
@@ -195,7 +195,7 @@ public class CardDeliveryTest {
         $("[data-test-id='phone'] input").setValue("");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(byText("Забронировать")).click();
-        $("[data-test-id='phone'] .input_invalid .input__sub")
+        $("[data-test-id='phone'] .input__inner .input__sub")
                 .shouldBe(visible)
                 .shouldHave(text("Поле обязательно для заполнения"));
 
@@ -213,7 +213,7 @@ public class CardDeliveryTest {
         $("[data-test-id='phone'] input").setValue("+7-910-267-11-42");
         $("[data-test-id='agreement'] .checkbox__box").click();
         $(byText("Забронировать")).click();
-        $("[data-test-id='phone'] .input_invalid .input__sub")
+        $("[data-test-id='phone'] .input__inner .input__sub")
                 .shouldBe(visible)
                 .shouldHave(text("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
 
@@ -230,9 +230,10 @@ public class CardDeliveryTest {
         $("[data-test-id='name'] input").setValue("Петров Петя");
         $("[data-test-id='phone'] input").setValue("+79102671142");
         $(byText("Забронировать")).click();
-        $("[data-test-id='agreement'] .input_invalid .checkbox__text")
+        $("[data-test-id='agreement'] .checkbox__text")
                 .shouldBe(visible)
-                .shouldHave(text("Я соглашаюсь с условиями обработки и использования моих персональных данных"));
+                .shouldHave(text("Я соглашаюсь с условиями обработки и использования моих персональных данных"),
+                        Condition.cssValue("color", "rgba(255, 92, 92, 1)"));
 
     }
 }
