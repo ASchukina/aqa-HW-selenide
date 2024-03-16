@@ -1,11 +1,12 @@
 package ru.netology;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -14,8 +15,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
@@ -23,27 +23,6 @@ import static org.openqa.selenium.Keys.BACK_SPACE;
 
 public class CardDeliveryTest {
     private WebDriver driver;
-
-    @BeforeAll
-    static void setUpAll() {
-        WebDriverManager.chromedriver().setup();
-    }
-
-    @BeforeEach
-    void setUp() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--headless");
-        driver = new ChromeDriver(options);
-        driver.get("http://localhost:9999");
-    }
-
-    @AfterEach
-    void tearDown() {
-        driver.quit();
-        driver = null;
-    }
 
     @Test
     void shouldSendSuccessfulRequest() {
@@ -256,6 +235,25 @@ public class CardDeliveryTest {
                 .shouldBe(visible)
                 .shouldHave(text("Я соглашаюсь с условиями обработки и использования моих персональных данных"),
                         Condition.cssValue("color", "rgba(255, 92, 92, 1)"));
+
+    }
+
+    @Test
+    void shouldSendSuccessfulRequestWithCitySearch() {
+        open("http://localhost:9999");
+        // переменная для того, чтобы ввести дату +3 дня от текущей
+        String neededDate = LocalDate.now().plusDays(3).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        $("[data-test-id='city'] input").setValue("Ор");
+        $(Selectors.byText("Орёл")).click();
+        $("[data-test-id='date'] input").doubleClick().sendKeys(BACK_SPACE); // очищаем поле
+        $("[data-test-id='date'] input").setValue(neededDate); // вводим нужную дату
+        $("[data-test-id='name'] input").setValue("Петров Петя");
+        $("[data-test-id='phone'] input").setValue("+79102671142");
+        $("[data-test-id='agreement'] .checkbox__box").click();
+        $(byText("Забронировать")).click();
+        $("[data-test-id='notification']")
+                .shouldHave(Condition.text("Успешно! Встреча успешно забронирована на " + neededDate),
+                        Duration.ofSeconds(15));
 
     }
 }
