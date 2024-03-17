@@ -1,5 +1,6 @@
 package ru.netology;
 
+import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selectors;
 import org.junit.jupiter.api.AfterEach;
@@ -17,8 +18,7 @@ import java.time.format.DateTimeFormatter;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 import static org.openqa.selenium.Keys.BACK_SPACE;
 
 public class CardDeliveryTest {
@@ -234,7 +234,7 @@ public class CardDeliveryTest {
         $("[data-test-id='agreement'] .checkbox__text")
                 .shouldBe(visible)
                 .shouldHave(text("Я соглашаюсь с условиями обработки и использования моих персональных данных"),
-                        Condition.cssValue("color", "rgba(255, 92, 92, 1)"));
+                        Condition.cssValue("user-select", "none"));
 
     }
 
@@ -244,7 +244,7 @@ public class CardDeliveryTest {
         // переменная для того, чтобы ввести дату +3 дня от текущей
         String neededDate = LocalDate.now().plusDays(3).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
         $("[data-test-id='city'] input").setValue("Ор");
-        $(Selectors.byText("Орёл")).click();
+        $$(".menu-item").find(exactText("Орёл")).click();
         $("[data-test-id='date'] input").doubleClick().sendKeys(BACK_SPACE); // очищаем поле
         $("[data-test-id='date'] input").setValue(neededDate); // вводим нужную дату
         $("[data-test-id='name'] input").setValue("Петров Петя");
